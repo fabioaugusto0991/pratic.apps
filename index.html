@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>PMMT · Estudo 3º Sgt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #0d0d0f;
+  --ink2: #3a3a40;
+  --ink3: #7a7a85;
+  --paper: #f5f4f0;
+  --paper2: #eeecea;
+  --paper3: #e4e2de;
+  --accent: #e84b1e;
+  --accent2: #f07840;
+  --gold: #c89a2e;
+  --blue: #1a5cad;
+  --green: #1a7a56;
+  --green-lt: #d4efe5;
+  --card: #ffffff;
+  --shadow: 0 2px 16px rgba(13,13,15,0.08);
+  --shadow-lg: 0 8px 40px rgba(13,13,15,0.14);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --font-head: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --ease: cubic-bezier(.4,0,.2,1);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--paper);
+  color: var(--ink);
+  min-height: 100dvh;
+  overscroll-behavior: none;
+}
+
+/* ── HEADER ── */
+.header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(245,244,240,.92);
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  border-bottom: 1px solid var(--paper3);
+  padding: 0 1.25rem;
+}
+.header-inner {
+  max-width: 740px; margin: 0 auto;
+  display: flex; align-items: center; gap: 12px;
+  height: 58px;
+}
+.logo {
+  font-family: var(--font-head);
+  font-size: 15px; font-weight: 800;
+  letter-spacing: .06em; color: var(--accent);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.logo span { color: var(--ink); }
+.header-pct {
+  font-family: var(--font-head);
+  font-size: 13px; font-weight: 600;
+  color: var(--ink2);
+  margin-left: auto;
+}
+.header-bar-wrap {
+  width: 80px; height: 5px;
+  background: var(--paper3); border-radius: 3px;
+  overflow: hidden;
+}
+.header-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 3px;
+  transition: width .5s var(--ease);
+}
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, var(--ink) 0%, #1e1e28 60%, #2a1a0e 100%);
+  color: #fff;
+  padding: 2.5rem 1.25rem 2rem;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 80% 20%, rgba(232,75,30,.25) 0%, transparent 55%),
+    radial-gradient(ellipse at 20% 80%, rgba(26,92,173,.2) 0%, transparent 55%);
+  pointer-events: none;
+}
+.hero-inner { max-width: 740px; margin: 0 auto; position: relative; }
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 500; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--accent2);
+  background: rgba(232,75,30,.15);
+  border: 1px solid rgba(232,75,30,.3);
+  padding: 4px 10px; border-radius: 20px;
+  margin-bottom: .9rem;
+}
+.hero-tag::before { content: '●'; font-size: 8px; }
+.hero h1 {
+  font-family: var(--font-head);
+  font-size: clamp(22px, 5vw, 32px);
+  font-weight: 800; line-height: 1.1;
+  margin-bottom: .6rem;
+}
+.hero h1 em { color: var(--accent2); font-style: normal; }
+.hero p {
+  font-size: 13px; color: rgba(255,255,255,.6);
+  line-height: 1.6; max-width: 480px; margin-bottom: 1.75rem;
+}
+
+/* ── METRICS GRID ── */
+.metrics {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 8px; margin-bottom: 1.75rem;
+}
+@media (max-width: 420px) { .metrics { grid-template-columns: repeat(2,1fr); } }
+.metric {
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: var(--radius-sm);
+  padding: .65rem .8rem;
+  backdrop-filter: blur(8px);
+}
+.metric-lbl { font-size: 10px; color: rgba(255,255,255,.5); letter-spacing: .04em; margin-bottom: 2px; }
+.metric-val {
+  font-family: var(--font-head);
+  font-size: 22px; font-weight: 700;
+  color: #fff;
+}
+.metric-val.accent { color: var(--accent2); }
+
+/* ── OVERALL BAR ── */
+.overall-wrap { margin-bottom: .5rem; }
+.overall-labels {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: rgba(255,255,255,.5); margin-bottom: 5px;
+}
+.overall-bar {
+  height: 8px; background: rgba(255,255,255,.12);
+  border-radius: 4px; overflow: hidden;
+}
+.overall-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  border-radius: 4px;
+  transition: width .6s var(--ease);
+  position: relative;
+}
+.overall-fill::after {
+  content: '';
+  position: absolute; top: 0; right: 0; bottom: 0; width: 40px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.35));
+  animation: shimmer 2s ease-in-out infinite;
+}
+@keyframes shimmer { 0%,100%{opacity:0} 50%{opacity:1} }
+
+/* ── MAIN CONTENT ── */
+.main { max-width: 740px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
+
+/* ── FORMULA CHIP ── */
+.formula {
+  background: var(--card);
+  border: 1px solid var(--paper3);
+  border-radius: var(--radius);
+  padding: .9rem 1.1rem;
+  margin-bottom: 1.5rem;
+  font-size: 12px; color: var(--ink2);
+  line-height: 1.7;
+  box-shadow: var(--shadow);
+}
+.formula strong { color: var(--ink); font-weight: 600; }
+.formula .f-eq {
+  font-family: var(--font-head);
+  font-size: 13px; font-weight: 600;
+  color: var(--blue); margin-top: 3px;
+  display: block;
+}
+
+/* ── DISCIPLINE CARDS ── */
+.disc {
+  background: var(--card);
+  border-radius: var(--radius);
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  border: 1px solid transparent;
+  transition: border-color .2s, box-shadow .2s;
+}
+.disc:has(.disc-body:not([style*="none"])) {
+  border-color: var(--paper3);
+  box-shadow: var(--shadow-lg);
+}
+
+.disc-hdr {
+  padding: 1rem 1.1rem;
+  cursor: pointer;
+  display: flex; align-items: center; gap: 10px;
+  user-select: none;
+  transition: background .15s;
+}
+.disc-hdr:hover { background: var(--paper); }
+.disc-hdr:active { background: var(--paper2); }
+
+.disc-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; font-size: 18px;
+  font-weight: 700; font-family: var(--font-head);
+}
+
+.disc-info { flex: 1; min-width: 0; }
+.disc-num {
+  font-size: 10px; font-weight: 600; letter-spacing: .07em;
+  text-transform: uppercase; color: var(--ink3);
+  margin-bottom: 1px;
+}
+.disc-title {
+  font-family: var(--font-head);
+  font-size: 13px; font-weight: 700;
+  color: var(--ink); white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+
+.disc-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.peso-pill {
+  font-size: 10px; font-weight: 600;
+  padding: 3px 8px; border-radius: 20px;
+  letter-spacing: .03em;
+}
+.disc-pct-wrap { text-align: right; }
+.disc-pct {
+  font-family: var(--font-head);
+  font-size: 16px; font-weight: 800;
+}
+.chevron {
+  font-size: 16px; color: var(--ink3);
+  transition: transform .25s var(--ease);
+  flex-shrink: 0;
+}
+.disc-hdr.open .chevron { transform: rotate(180deg); }
+
+.disc-prog {
+  height: 3px;
+  background: var(--paper2);
+  margin: 0 1.1rem .2rem;
+  border-radius: 2px; overflow: hidden;
+}
+.disc-prog-fill {
+  height: 100%; border-radius: 2px;
+  transition: width .5s var(--ease);
+}
+
+/* ── SECTIONS ── */
+.disc-body { display: none; }
+.disc-body.open { display: block; }
+
+.section-hdr {
+  display: flex; align-items: center; gap: 6px;
+  padding: .7rem 1.1rem .3rem;
+}
+.section-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  flex-shrink: 0;
+}
+.section-title {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: .05em; text-transform: uppercase;
+  color: var(--ink3);
+}
+.section-count {
+  font-size: 10px; color: var(--ink3);
+  margin-left: auto;
+}
+
+.items-wrap { padding: 0 .6rem .6rem; }
+.item-row {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: .5rem .55rem;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background .12s;
+  position: relative;
+}
+.item-row:hover { background: var(--paper); }
+.item-row:active { background: var(--paper2); }
+
+.cb {
+  width: 18px; height: 18px; min-width: 18px;
+  border: 2px solid var(--paper3);
+  border-radius: 5px;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1px;
+  transition: background .15s, border-color .15s, transform .12s;
+  flex-shrink: 0;
+}
+.item-row:hover .cb { border-color: var(--ink3); }
+.cb.done {
+  border-color: var(--green);
+  background: var(--green);
+  transform: scale(1.05);
+}
+.cb.done::after {
+  content: '';
+  display: block;
+  width: 5px; height: 9px;
+  border: 2px solid #fff;
+  border-top: none; border-left: none;
+  transform: rotate(42deg) translate(-1px,-2px);
+}
+
+.item-content { flex: 1; min-width: 0; }
+.item-text {
+  font-size: 13px; color: var(--ink);
+  line-height: 1.5;
+  transition: color .15s;
+}
+.item-text.done { color: var(--ink3); text-decoration: line-through; text-decoration-color: var(--paper3); }
+
+.yt-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 500;
+  color: var(--blue);
+  background: rgba(26,92,173,.07);
+  border: 1px solid rgba(26,92,173,.15);
+  border-radius: 20px;
+  padding: 3px 9px;
+  margin-top: 4px;
+  text-decoration: none;
+  transition: background .15s, border-color .15s;
+}
+.yt-btn:hover {
+  background: rgba(26,92,173,.13);
+  border-color: rgba(26,92,173,.3);
+}
+.yt-icon { font-size: 12px; }
+
+.divider { height: 1px; background: var(--paper2); margin: .2rem .6rem; }
+
+/* ── SECTION PROGRESS MINI BAR ── */
+.sec-mini-bar {
+  height: 2px; background: var(--paper2);
+  margin: 0 1.1rem .1rem;
+  border-radius: 1px; overflow: hidden;
+}
+.sec-mini-fill { height: 100%; border-radius: 1px; transition: width .4s var(--ease); }
+
+/* ── FOOTER ACTIONS ── */
+.footer-actions {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.25rem 0 0;
+  border-top: 1px solid var(--paper3);
+  margin-top: .5rem;
+}
+.footer-note { font-size: 11px; color: var(--ink3); line-height: 1.5; }
+.reset-btn {
+  font-size: 12px; font-weight: 500;
+  color: var(--ink2);
+  background: var(--card);
+  border: 1px solid var(--paper3);
+  border-radius: var(--radius-sm);
+  padding: 7px 14px;
+  cursor: pointer;
+  transition: background .15s, border-color .15s;
+  display: flex; align-items: center; gap: 5px;
+}
+.reset-btn:hover { background: var(--paper2); border-color: var(--ink3); }
+
+/* ── COMPLETION BANNER ── */
+.done-banner {
+  display: none;
+  background: linear-gradient(135deg, var(--green), #0e9c68);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1.25rem;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(26,122,86,.3);
+  animation: popIn .4s var(--ease);
+}
+.done-banner.show { display: block; }
+@keyframes popIn {
+  from { opacity:0; transform: scale(.95) translateY(8px); }
+  to { opacity:1; transform: none; }
+}
+.done-banner h2 {
+  font-family: var(--font-head);
+  font-size: 18px; font-weight: 800; margin-bottom: 4px;
+}
+.done-banner p { font-size: 13px; opacity: .85; }
+
+/* ── SCROLL TO TOP ── */
+.fab {
+  position: fixed; bottom: 24px; right: 20px;
+  width: 46px; height: 46px;
+  background: var(--accent);
+  color: #fff; border: none;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 4px 16px rgba(232,75,30,.4);
+  cursor: pointer;
+  opacity: 0; transform: translateY(12px);
+  transition: opacity .25s, transform .25s, background .15s;
+  z-index: 200;
+}
+.fab.visible { opacity: 1; transform: none; }
+.fab:hover { background: var(--accent2); }
+
+/* ── DISCIPLINE COLORS ── */
+.d1 { --dc: #1a5cad; --dc-lt: #dde9f7; --dc-bar: linear-gradient(90deg,#1a5cad,#4a8cd8); }
+.d2 { --dc: #1a7a56; --dc-lt: #d4efe5; --dc-bar: linear-gradient(90deg,#1a7a56,#28b07c); }
+.d3 { --dc: #8b4a0a; --dc-lt: #f5e5d0; --dc-bar: linear-gradient(90deg,#8b4a0a,#d4782a); }
+.d4 { --dc: #a01c10; --dc-lt: #fae0dd; --dc-bar: linear-gradient(90deg,#a01c10,#d94030); }
+
+.disc-icon.d1 { background: var(--dc-lt); color: var(--dc); }
+.disc-icon.d2 { background: var(--dc-lt); color: var(--dc); }
+.disc-icon.d3 { background: var(--dc-lt); color: var(--dc); }
+.disc-icon.d4 { background: var(--dc-lt); color: var(--dc); }
+
+.disc.d1 .disc-pct { color: #1a5cad; }
+.disc.d2 .disc-pct { color: #1a7a56; }
+.disc.d3 .disc-pct { color: #8b4a0a; }
+.disc.d4 .disc-pct { color: #a01c10; }
+
+.disc.d1 .peso-pill { background: #dde9f7; color: #1a5cad; }
+.disc.d2 .peso-pill { background: #d4efe5; color: #1a7a56; }
+.disc.d3 .peso-pill { background: #f5e5d0; color: #8b4a0a; }
+.disc.d4 .peso-pill { background: #fae0dd; color: #a01c10; }
+
+.disc.d1 .disc-prog-fill { background: linear-gradient(90deg,#1a5cad,#4a8cd8); }
+.disc.d2 .disc-prog-fill { background: linear-gradient(90deg,#1a7a56,#28b07c); }
+.disc.d3 .disc-prog-fill { background: linear-gradient(90deg,#8b4a0a,#d4782a); }
+.disc.d4 .disc-prog-fill { background: linear-gradient(90deg,#a01c10,#d94030); }
+
+.disc.d1 .section-dot { background: #1a5cad; }
+.disc.d2 .section-dot { background: #1a7a56; }
+.disc.d3 .section-dot { background: #8b4a0a; }
+.disc.d4 .section-dot { background: #a01c10; }
+
+.disc.d1 .sec-mini-fill { background: #1a5cad; }
+.disc.d2 .sec-mini-fill { background: #1a7a56; }
+.disc.d3 .sec-mini-fill { background: #8b4a0a; }
+.disc.d4 .sec-mini-fill { background: #a01c10; }
+
+/* ── STREAK / MOTIVAÇÃO ── */
+.streak-bar {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--card);
+  border: 1px solid var(--paper3);
+  border-radius: var(--radius);
+  padding: .8rem 1.1rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--shadow);
+}
+.streak-icon { font-size: 22px; }
+.streak-text { flex: 1; }
+.streak-title { font-family: var(--font-head); font-size: 13px; font-weight: 700; color: var(--ink); }
+.streak-sub { font-size: 11px; color: var(--ink3); margin-top: 1px; }
+.streak-count {
+  font-family: var(--font-head);
+  font-size: 20px; font-weight: 800;
+  color: var(--accent);
+}
+</style>
+</head>
+<body>
+
+<!-- STICKY HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">PMMT<span> · 3º Sgt</span></div>
+    <div class="header-pct" id="h-pct">0%</div>
+    <div class="header-bar-wrap">
+      <div class="header-bar-fill" id="h-fill" style="width:0%"></div>
+    </div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">Edital nº 001/DEIP/DGP/PMMT/2021</div>
+    <h1>Plano de Estudos<br><em>Promoção a 3º Sargento</em></h1>
+    <p>80 questões · 4 disciplinas · Mínimo 50% em cada grupo<br>Marque cada tópico ao concluir — progresso salvo automaticamente.</p>
+
+    <div class="metrics">
+      <div class="metric">
+        <div class="metric-lbl">PROGRESSO</div>
+        <div class="metric-val accent" id="m-pct">0%</div>
+      </div>
+      <div class="metric">
+        <div class="metric-lbl">CONCLUÍDOS</div>
+        <div class="metric-val" id="m-conc">0</div>
+      </div>
+      <div class="metric">
+        <div class="metric-lbl">TOTAL</div>
+        <div class="metric-val" id="m-total">0</div>
+      </div>
+      <div class="metric">
+        <div class="metric-lbl">RESTANTES</div>
+        <div class="metric-val" id="m-rest">0</div>
+      </div>
+    </div>
+
+    <div class="overall-wrap">
+      <div class="overall-labels">
+        <span>Progresso geral</span>
+        <span id="overall-lbl">0 de 0 itens</span>
+      </div>
+      <div class="overall-bar">
+        <div class="overall-fill" id="overall-fill" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<main class="main">
+
+  <div class="done-banner" id="done-banner">
+    <h2>🎖️ Conteúdo 100% revisado!</h2>
+    <p>Você concluiu todos os tópicos do edital. Bom para a prova!</p>
+  </div>
+
+  <div class="streak-bar">
+    <div class="streak-icon">🔥</div>
+    <div class="streak-text">
+      <div class="streak-title" id="streak-title">Continue aquecendo!</div>
+      <div class="streak-sub" id="streak-sub">Marque itens para acompanhar sua evolução</div>
+    </div>
+    <div class="streak-count" id="streak-count">0</div>
+  </div>
+
+  <div class="formula">
+    <strong>Fórmula da Nota Final (PF):</strong>
+    <span class="f-eq">PF = (CLPAP × 1,0) + (CPJM × 1,25) + (CLIPM × 1,75) + (CP × 2,0) ÷ 12</span>
+    Nota de 0 a 10 · Mínimo 50% em cada grupo para classificação
+  </div>
+
+  <div id="app"></div>
+
+  <div class="footer-actions">
+    <div class="footer-note">Progresso salvo no navegador<br>Funciona offline após primeiro acesso</div>
+    <button class="reset-btn" onclick="resetAll()">
+      ↺ Zerar progresso
+    </button>
+  </div>
+
+</main>
+
+<button class="fab" id="fab" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Voltar ao topo">↑</button>
+
+<script>
+const DATA = [
+  {
+    id:'d1', cls:'d1', num:'Disciplina 01',
+    label:'Língua Portuguesa e Adm. Pública',
+    abbr:'CLPAP', peso:'Peso 1,0',
+    icon:'LP',
+    sections:[
+      { label:'Língua Portuguesa', items:[
+        {id:'lp1',text:'Interpretação de textos — gêneros discursivos e tipos textuais',yt:'https://www.youtube.com/results?search_query=interpretação+de+texto+concurso+público'},
+        {id:'lp2',text:'Coesão textual — elementos coesivos, referenciação, substituição e repetição',yt:'https://www.youtube.com/results?search_query=coesão+referenciação+textual+concurso'},
+        {id:'lp3',text:'Operadores argumentativos e sequenciação textual',yt:'https://www.youtube.com/results?search_query=operadores+argumentativos+sequenciação+textual+concurso'},
+        {id:'lp4',text:'Variações linguísticas e funções de linguagem',yt:'https://www.youtube.com/results?search_query=variações+linguísticas+funções+linguagem+concurso'},
+        {id:'lp5',text:'Ortografia oficial — escrita correta e acentuação',yt:'https://www.youtube.com/results?search_query=ortografia+acentuação+concurso+público'},
+        {id:'lp6',text:'Ortografia — uso do hífen, maiúsculas e minúsculas',yt:'https://www.youtube.com/results?search_query=uso+hífen+maiúsculas+minúsculas+concurso'},
+        {id:'lp7',text:'Homônimas, homófonas e homógrafas',yt:'https://www.youtube.com/results?search_query=homônimas+homófonas+homógrafas+concurso'},
+        {id:'lp8',text:'Morfossintaxe — estrutura, formação e classes de palavras',yt:'https://www.youtube.com/results?search_query=morfossintaxe+classes+palavras+concurso'},
+        {id:'lp9',text:'Morfossintaxe — tempos e modos verbais',yt:'https://www.youtube.com/results?search_query=tempos+modos+verbais+concurso+público'},
+        {id:'lp10',text:'Coordenação e subordinação entre orações',yt:'https://www.youtube.com/results?search_query=coordenação+subordinação+orações+concurso'},
+        {id:'lp11',text:'Sinais de pontuação',yt:'https://www.youtube.com/results?search_query=sinais+pontuação+concurso+público'},
+        {id:'lp12',text:'Semântica — denotação, conotação, sinonímia, antonímia, polissemia',yt:'https://www.youtube.com/results?search_query=semântica+sinonímia+polissemia+concurso'},
+        {id:'lp13',text:'Concordância nominal e verbal',yt:'https://www.youtube.com/results?search_query=concordância+nominal+verbal+concurso'},
+        {id:'lp14',text:'Regência nominal e verbal',yt:'https://www.youtube.com/results?search_query=regência+nominal+verbal+concurso'},
+        {id:'lp15',text:'Emprego do sinal indicativo de crase',yt:'https://www.youtube.com/results?search_query=crase+emprego+concurso+público'},
+        {id:'lp16',text:'Reescrita de frases, parágrafos e textos em diferentes gêneros',yt:'https://www.youtube.com/results?search_query=reescrita+frases+parágrafos+concurso'},
+      ]},
+      { label:'Administração Pública e Gestão Estratégica', items:[
+        {id:'ap1',text:'Estado, governo e administração pública — conceitos, poderes e princípios',yt:'https://www.youtube.com/results?search_query=estado+governo+administração+pública+princípios+concurso'},
+        {id:'ap2',text:'Organização administrativa — administração direta e indireta',yt:'https://www.youtube.com/results?search_query=administração+direta+indireta+concurso'},
+        {id:'ap3',text:'Agentes públicos — espécies, poderes, deveres e prerrogativas',yt:'https://www.youtube.com/results?search_query=agentes+públicos+espécies+poderes+concurso'},
+        {id:'ap4',text:'Poderes administrativos',yt:'https://www.youtube.com/results?search_query=poderes+administrativos+concurso'},
+        {id:'ap5',text:'Atos administrativos — conceitos, requisitos, atributos e espécies',yt:'https://www.youtube.com/results?search_query=atos+administrativos+conceitos+atributos+concurso'},
+        {id:'ap6',text:'Controle administrativo, judicial e legislativo',yt:'https://www.youtube.com/results?search_query=controle+administração+pública+concurso'},
+        {id:'ap7',text:'Responsabilidade civil do Estado',yt:'https://www.youtube.com/results?search_query=responsabilidade+civil+estado+concurso'},
+        {id:'ap8',text:'Modelos teóricos — patrimonialista, burocrático e gerencial',yt:'https://www.youtube.com/results?search_query=modelos+administração+pública+patrimonialista+burocrático+gerencial'},
+        {id:'ap9',text:'Ética na função pública e nova gestão pública',yt:'https://www.youtube.com/results?search_query=ética+função+pública+nova+gestão+concurso'},
+        {id:'ap10',text:'Eficiência, eficácia e efetividade na Adm. Pública',yt:'https://www.youtube.com/results?search_query=eficiência+eficácia+efetividade+administração+pública+concurso'},
+        {id:'ap11',text:'Gestão de materiais e patrimônio — logística e armazenagem',yt:'https://www.youtube.com/results?search_query=gestão+materiais+patrimônio+logística+concurso'},
+        {id:'ap12',text:'Gestão de Pessoas — avaliação de desempenho e competências',yt:'https://www.youtube.com/results?search_query=gestão+pessoas+avaliação+desempenho+competências+concurso'},
+        {id:'ap13',text:'Gestão Estratégica — BSC (Balanced Scorecard)',yt:'https://www.youtube.com/results?search_query=balanced+scorecard+BSC+gestão+estratégica+concurso'},
+        {id:'ap14',text:'Gestão Estratégica — Análise SWOT e Matriz GUT',yt:'https://www.youtube.com/results?search_query=análise+SWOT+matriz+GUT+gestão+estratégica+concurso'},
+        {id:'ap15',text:'Ferramenta 5W2H — organização e guia de ações',yt:'https://www.youtube.com/results?search_query=5W2H+ferramenta+gestão+concurso'},
+        {id:'ap16',text:'Lei 7.692/2002 — processo administrativo Adm. Pública Estadual MT',yt:'https://www.youtube.com/results?search_query=lei+7692+2002+processo+administrativo+mato+grosso'},
+      ]}
+    ]
+  },
+  {
+    id:'d2', cls:'d2', num:'Disciplina 02',
+    label:'Polícia Judiciária Militar',
+    abbr:'CPJM', peso:'Peso 1,25',
+    icon:'PJ',
+    sections:[
+      { label:'Código Penal Militar — Parte Geral', items:[
+        {id:'pj1',text:'Art. 9º — Crimes militares em tempo de paz',yt:'https://www.youtube.com/results?search_query=CPM+art+9+crimes+militares+tempo+paz'},
+        {id:'pj2',text:'Arts. 12 e 13 — Aplicação da lei penal militar no tempo e espaço',yt:'https://www.youtube.com/results?search_query=CPM+art+12+13+aplicação+lei+penal+militar'},
+        {id:'pj3',text:'Arts. 21 a 24 — Culpabilidade, imputabilidade e erro de direito',yt:'https://www.youtube.com/results?search_query=CPM+art+21+22+23+24+culpabilidade+imputabilidade'},
+      ]},
+      { label:'Código Penal Militar — Parte Especial', items:[
+        {id:'pj4',text:'Art. 149 — Deserção',yt:'https://www.youtube.com/results?search_query=CPM+art+149+deserção+militar'},
+        {id:'pj5',text:'Art. 157 — Furto',yt:'https://www.youtube.com/results?search_query=CPM+art+157+furto+código+penal+militar'},
+        {id:'pj6',text:'Art. 160 — Dano',yt:'https://www.youtube.com/results?search_query=CPM+art+160+dano+código+penal+militar'},
+        {id:'pj7',text:'Art. 163 — Peculato',yt:'https://www.youtube.com/results?search_query=CPM+art+163+peculato+código+penal+militar'},
+        {id:'pj8',text:'Art. 175 — Concussão',yt:'https://www.youtube.com/results?search_query=CPM+art+175+concussão+código+penal+militar'},
+        {id:'pj9',text:'Art. 187 — Corrupção passiva',yt:'https://www.youtube.com/results?search_query=CPM+art+187+corrupção+passiva+código+penal+militar'},
+        {id:'pj10',text:'Art. 195 — Falsidade de atestado',yt:'https://www.youtube.com/results?search_query=CPM+art+195+falsidade+atestado+código+penal+militar'},
+        {id:'pj11',text:'Art. 202 — Uso indevido de uniforme',yt:'https://www.youtube.com/results?search_query=CPM+art+202+uso+indevido+uniforme+código+penal+militar'},
+      ]},
+      { label:'Código de Processo Penal Militar', items:[
+        {id:'pj12',text:'Arts. 7º e 9º — Ação penal e competência',yt:'https://www.youtube.com/results?search_query=CPPM+arts+7+9+ação+penal+competência'},
+        {id:'pj13',text:'Arts. 10 a 13 — Jurisdição militar',yt:'https://www.youtube.com/results?search_query=CPPM+arts+10+11+12+13+jurisdição+militar'},
+        {id:'pj14',text:'Arts. 15, 21 a 23 — Competência por conexão e continência',yt:'https://www.youtube.com/results?search_query=CPPM+arts+15+21+22+23+competência+conexão'},
+        {id:'pj15',text:'Arts. 26 a 28 — Conflito de jurisdição',yt:'https://www.youtube.com/results?search_query=CPPM+arts+26+27+28+conflito+jurisdição+militar'},
+        {id:'pj16',text:'Arts. 451 a 456 — Execução das penas militares',yt:'https://www.youtube.com/results?search_query=CPPM+arts+451+456+execução+penas+militares'},
+      ]},
+      { label:'Legislação especial', items:[
+        {id:'pj17',text:'Lei 13.491/2017 — alterações ao Código Penal Militar',yt:'https://www.youtube.com/results?search_query=lei+13491+2017+alterações+código+penal+militar'},
+        {id:'pj18',text:'Lei 8.429/1992 — improbidade administrativa',yt:'https://www.youtube.com/results?search_query=lei+improbidade+administrativa+8429+1992+concurso'},
+        {id:'pj19',text:'Lei 9.455/1997 — Lei de Tortura',yt:'https://www.youtube.com/results?search_query=lei+tortura+9455+97+concurso'},
+        {id:'pj20',text:'Lei 13.869/2019 — abuso de autoridade',yt:'https://www.youtube.com/results?search_query=lei+abuso+autoridade+13869+2019+concurso'},
+      ]},
+      { label:'Manuais PMMT', items:[
+        {id:'pj21',text:'Manual de IPM e prisão em flagrante — Portaria 217/GCG/PMMT/09',yt:'https://www.youtube.com/results?search_query=IPM+inquérito+policial+militar+prisão+flagrante+PMMT'},
+        {id:'pj22',text:'Manual de Sindicância da PMMT — Portaria 218/GCG/PMMT/09',yt:'https://www.youtube.com/results?search_query=sindicância+administrativa+militar+PMMT'},
+        {id:'pj23',text:'Manual de Deserção da PMMT — Portaria 46/CORREGPM/12',yt:'https://www.youtube.com/results?search_query=deserção+militar+processo+PMMT'},
+        {id:'pj24',text:'Portaria 160/GCG/PMMT/09 — normatiza sindicância na PMMT',yt:'https://www.youtube.com/results?search_query=portaria+sindicância+PMMT+160'},
+      ]}
+    ]
+  },
+  {
+    id:'d3', cls:'d3', num:'Disciplina 03',
+    label:'Legislação de Interesse Policial Militar',
+    abbr:'CLIPM', peso:'Peso 1,75',
+    icon:'LI',
+    sections:[
+      { label:'CF/88 — Princípios Fundamentais (arts. 1º–4º)', items:[
+        {id:'cf1',text:'Art. 1º — Fundamentos da República: soberania, cidadania, dignidade, valores sociais, pluralismo',yt:'https://www.youtube.com/results?search_query=art+1+constituição+federal+fundamentos+república+concurso'},
+        {id:'cf2',text:'Art. 2º — Separação e independência dos poderes',yt:'https://www.youtube.com/results?search_query=art+2+constituição+federal+separação+poderes+concurso'},
+        {id:'cf3',text:'Art. 3º — Objetivos fundamentais da República',yt:'https://www.youtube.com/results?search_query=art+3+constituição+federal+objetivos+fundamentais+concurso'},
+        {id:'cf4',text:'Art. 4º — Princípios das relações internacionais',yt:'https://www.youtube.com/results?search_query=art+4+constituição+federal+relações+internacionais+concurso'},
+      ]},
+      { label:'CF/88 — Direitos e Garantias Fundamentais (arts. 5º–11)', items:[
+        {id:'cf5',text:'Art. 5º, caput e incisos I–X — igualdade, vida, liberdade, segurança e propriedade',yt:'https://www.youtube.com/results?search_query=art+5+constituição+federal+incisos+I+X+direitos+individuais+concurso'},
+        {id:'cf5b',text:'Art. 5º, incisos XI–XXX — inviolabilidade de domicílio, sigilo e liberdades',yt:'https://www.youtube.com/results?search_query=art+5+constituição+federal+incisos+XI+XXX+concurso'},
+        {id:'cf5c',text:'Art. 5º, incisos XXXI–LXXVIII — devido processo legal, habeas corpus, mandado de segurança',yt:'https://www.youtube.com/results?search_query=art+5+constituição+federal+devido+processo+legal+habeas+corpus+concurso'},
+        {id:'cf6',text:'Art. 6º — Direitos sociais',yt:'https://www.youtube.com/results?search_query=art+6+constituição+federal+direitos+sociais+concurso'},
+        {id:'cf7',text:'Arts. 7º a 11 — Direitos trabalhistas, sindicalização e greve',yt:'https://www.youtube.com/results?search_query=arts+7+8+9+10+11+constituição+federal+direitos+trabalhistas+concurso'},
+      ]},
+      { label:'CF/88 — Administração Pública (art. 37)', items:[
+        {id:'cf10',text:'Art. 37, caput — Princípios LIMPE: legalidade, impessoalidade, moralidade, publicidade, eficiência',yt:'https://www.youtube.com/results?search_query=art+37+constituição+federal+LIMPE+princípios+concurso'},
+        {id:'cf10b',text:'Art. 37, incisos I–VI — acesso a cargos e concurso público',yt:'https://www.youtube.com/results?search_query=art+37+incisos+I+VI+acesso+cargos+concurso+público'},
+        {id:'cf10c',text:'Art. 37 § 6º — Responsabilidade civil do Estado',yt:'https://www.youtube.com/results?search_query=responsabilidade+civil+estado+art+37+§6+constituição+concurso'},
+      ]},
+      { label:'CF/88 — Militares e Segurança Pública', items:[
+        {id:'cf11',text:'Art. 22, XXI — Competência da União: normas gerais sobre militares',yt:'https://www.youtube.com/results?search_query=art+22+XXI+constituição+federal+militares+competência+legislativa+concurso'},
+        {id:'cf12',text:'Art. 42 — Policiais e bombeiros militares estaduais: status e prerrogativas',yt:'https://www.youtube.com/results?search_query=art+42+constituição+federal+polícia+militar+bombeiros+estaduais+concurso'},
+        {id:'cf13',text:'Art. 142, caput — Forças Armadas: missão, subordinação, hierarquia e disciplina',yt:'https://www.youtube.com/results?search_query=art+142+constituição+federal+forças+armadas+missão+concurso'},
+        {id:'cf14',text:'Art. 142 §§ 1º–3º — Estatuto dos militares, casamento, filiação partidária',yt:'https://www.youtube.com/results?search_query=art+142+parágrafos+estatuto+militares+constituição+concurso'},
+        {id:'cf15',text:'Art. 144, caput — Segurança pública: dever do Estado e direito de todos',yt:'https://www.youtube.com/results?search_query=art+144+constituição+federal+segurança+pública+concurso'},
+        {id:'cf16',text:'Art. 144 §§ 5º e 6º — PMs: policiamento ostensivo e preservação da ordem',yt:'https://www.youtube.com/results?search_query=art+144+§5+§6+polícia+militar+policiamento+ostensivo+concurso'},
+      ]},
+      { label:'Constituição Estadual MT — Organização do Estado', items:[
+        {id:'ce1',text:'Art. 39 — Organização do Estado de Mato Grosso',yt:'https://www.youtube.com/results?search_query=constituição+estadual+mato+grosso+art+39+organização'},
+        {id:'ce2',text:'Art. 40 — Território e municípios do MT',yt:'https://www.youtube.com/results?search_query=constituição+estadual+mato+grosso+art+40+território'},
+        {id:'ce3',text:'Art. 41 — Capital e símbolos estaduais',yt:'https://www.youtube.com/results?search_query=constituição+estadual+mato+grosso+art+41+capital+símbolos'},
+        {id:'ce4',text:'Arts. 46 a 49 — Princípios e organização da Adm. Pública Estadual',yt:'https://www.youtube.com/results?search_query=constituição+estadual+mato+grosso+arts+46+49+administração+pública'},
+      ]},
+      { label:'Constituição Estadual MT — Poderes e Segurança Pública', items:[
+        {id:'ce5',text:'Art. 66, inc. XII — Competência da Assembleia Legislativa',yt:'https://www.youtube.com/results?search_query=constituição+estadual+mato+grosso+art+66+XII+assembleia+legislativa'},
+        {id:'ce6',text:'Arts. 80 e 81 — Poder Executivo estadual',yt:'https://www.youtube.com/results?search_query=constituição+estadual+mato+grosso+arts+80+81+poder+executivo'},
+        {id:'ce7',text:'Art. 83, § 1º — Servidores públicos estaduais',yt:'https://www.youtube.com/results?search_query=constituição+estadual+mato+grosso+art+83+servidores+públicos'},
+        {id:'ce8',text:'Art. 91, inc. IV — Competências do Governador',yt:'https://www.youtube.com/results?search_query=constituição+estadual+mato+grosso+art+91+governador+competências'},
+        {id:'ce9',text:'Art. 96, alíneas a, f e g — Tribunal de Contas: atribuições',yt:'https://www.youtube.com/results?search_query=constituição+estadual+mato+grosso+art+96+tribunal+contas'},
+        {id:'ce10',text:'Art. 101 — Segurança pública estadual: princípios e órgãos',yt:'https://www.youtube.com/results?search_query=constituição+estadual+mato+grosso+art+101+segurança+pública'},
+      ]},
+      { label:'Legislação Institucional PMMT', items:[
+        {id:'cl1',text:'Decreto-Lei 667/69 — reorganização das PMs e Corpos de Bombeiros',yt:'https://www.youtube.com/results?search_query=decreto+lei+667+69+polícia+militar+reorganização'},
+        {id:'cl2',text:'LC 555/2014 — Estatuto dos Militares do Estado de Mato Grosso',yt:'https://www.youtube.com/results?search_query=estatuto+militares+mato+grosso+LC+555+2014'},
+        {id:'cl3',text:'Lei 10.076/2014 — promoção de oficiais e praças da PMMT',yt:'https://www.youtube.com/results?search_query=lei+10076+2014+promoção+praças+PMMT'},
+        {id:'cl4',text:'LC 529/2014 — fixação de efetivo da PMMT',yt:'https://www.youtube.com/results?search_query=LC+529+2014+efetivo+policia+militar+MT'},
+        {id:'cl5',text:'LC 386/2010 — Lei de Organização Básica da PMMT',yt:'https://www.youtube.com/results?search_query=LC+386+2010+organização+básica+PMMT'},
+        {id:'cl6',text:'Decreto 591/1980 — Regulamento de Movimentação de Oficiais e Praças',yt:'https://www.youtube.com/results?search_query=decreto+591+1980+movimentação+oficiais+praças+PMMT'},
+        {id:'cl7',text:'Decreto 1.400/2012 — RUPM/MT (Regulamento de Uniformes)',yt:'https://www.youtube.com/results?search_query=regulamento+uniformes+policia+militar+mato+grosso+RUPM'},
+      ]}
+    ]
+  },
+  {
+    id:'d4', cls:'d4', num:'Disciplina 04',
+    label:'Conhecimentos Profissionais',
+    abbr:'CP', peso:'Peso 2,0 ★',
+    icon:'CP',
+    sections:[
+      { label:'Manuais e procedimentos operacionais', items:[
+        {id:'cp1',text:'POP PMMT — Módulo I: abordagem policial',yt:'https://www.youtube.com/results?search_query=POP+PMMT+módulo+I+abordagem+policial'},
+        {id:'cp2',text:'POP PMMT — Módulo II: uso da força e algemamento',yt:'https://www.youtube.com/results?search_query=POP+PMMT+módulo+II+uso+força+algemamento'},
+        {id:'cp3',text:'POP PMMT — Módulo III: ocorrências diversas',yt:'https://www.youtube.com/results?search_query=POP+PMMT+módulo+III+ocorrências+diversas'},
+        {id:'cp4',text:'POP PMMT — Módulo IV: procedimentos administrativos',yt:'https://www.youtube.com/results?search_query=POP+PMMT+módulo+IV+procedimentos+administrativos'},
+        {id:'cp5',text:'Manual PMESP M14 — Art. II: conceitos básicos do policiamento ostensivo',yt:'https://www.youtube.com/results?search_query=manual+policiamento+ostensivo+PMESP+M14+conceitos+básicos'},
+        {id:'cp6',text:'Manual PMESP M14 — Art. III: características e princípios das atividades PM',yt:'https://www.youtube.com/results?search_query=PMESP+M14+art+III+características+princípios+atividades+policiais'},
+        {id:'cp7',text:'Manual PMESP M14 — Art. IV: características do policiamento ostensivo',yt:'https://www.youtube.com/results?search_query=PMESP+M14+art+IV+policiamento+ostensivo+características'},
+        {id:'cp8',text:'Manual PMESP M14 — Art. V: princípios do policiamento ostensivo',yt:'https://www.youtube.com/results?search_query=PMESP+M14+art+V+princípios+policiamento+ostensivo'},
+      ]},
+      { label:'Legislação penal e especial aplicada', items:[
+        {id:'cp9',text:'ECA — Lei 8.069/1990: principais dispositivos policiais',yt:'https://www.youtube.com/results?search_query=ECA+estatuto+criança+adolescente+8069+concurso+PM'},
+        {id:'cp10',text:'Lei Maria da Penha — Lei 11.340/2006: medidas protetivas e procedimentos',yt:'https://www.youtube.com/results?search_query=lei+maria+da+penha+11340+2006+medidas+protetivas+concurso'},
+        {id:'cp11',text:'CTB — Lei 9.503/97: infrações, sanções e fiscalização',yt:'https://www.youtube.com/results?search_query=código+trânsito+brasileiro+infrações+sanções+concurso+PM'},
+        {id:'cp12',text:'Lei de Drogas — Lei 11.343/2006: tráfico, posse e procedimentos',yt:'https://www.youtube.com/results?search_query=lei+drogas+11343+2006+tráfico+posse+procedimentos+concurso'},
+        {id:'cp13',text:'Lei de Crimes Ambientais — Lei 9.605/98',yt:'https://www.youtube.com/results?search_query=lei+crimes+ambientais+9605+98+concurso'},
+        {id:'cp14',text:'Estatuto do Desarmamento — Lei 10.826/2003',yt:'https://www.youtube.com/results?search_query=estatuto+desarmamento+10826+2003+concurso'},
+        {id:'cp15',text:'Lei do Crime Racial — Lei 7.716/1989',yt:'https://www.youtube.com/results?search_query=lei+crime+racial+7716+1989+concurso'},
+        {id:'cp16',text:'Juizados Especiais — Lei 9.099/1995: infrações de menor potencial ofensivo',yt:'https://www.youtube.com/results?search_query=juizados+especiais+9099+1995+menor+potencial+ofensivo+concurso'},
+        {id:'cp17',text:'Lei das Contravenções Penais — Decreto-Lei 3.688/1941',yt:'https://www.youtube.com/results?search_query=lei+contravenções+penais+3688+1941+concurso'},
+      ]}
+    ]
+  }
+];
+
+const TOTAL = DATA.reduce((s,d)=>s+d.sections.reduce((s2,sec)=>s2+sec.items.length,0),0);
+let state = {};
+
+function loadState(){ try{ state=JSON.parse(localStorage.getItem('pmmt_v4')||'{}'); }catch(e){ state={}; } }
+function saveState(){ try{ localStorage.setItem('pmmt_v4',JSON.stringify(state)); }catch(e){} }
+
+function toggle(id){
+  state[id]=!state[id];
+  saveState();
+  updateMetrics();
+  updateItem(id);
+}
+
+function resetAll(){
+  if(!confirm('Zerar todo o progresso? Esta ação não pode ser desfeita.')){ return; }
+  state={};saveState();render();
+}
+
+function toggleDisc(discId){
+  const body=document.getElementById('body-'+discId);
+  const hdr=document.getElementById('hdr-'+discId);
+  if(!body)return;
+  const isOpen=body.classList.contains('open');
+  body.classList.toggle('open',!isOpen);
+  hdr.classList.toggle('open',!isOpen);
+}
+
+const motivations=[
+  ['🚀','Incrível! Você está voando!','itens revisados — continue assim!'],
+  ['💪','Força total!','itens no seu cinto — não para!'],
+  ['🎯','Na mira certa!','itens dominados — foco total!'],
+  ['🔥','Ritmo de campeão!','itens concluídos — arrasando!'],
+  ['⚡','Energia máxima!','itens revisados — imparável!'],
+  ['🏆','Postura de 3º Sargento!','itens concluídos — orgulho!'],
+];
+
+function updateMetrics(){
+  const allItems=DATA.reduce((a,d)=>a.concat(d.sections.reduce((b,s)=>b.concat(s.items),[])),[]); 
+  const done=allItems.filter(it=>state[it.id]).length;
+  const pct=Math.round(done/TOTAL*100);
+
+  document.getElementById('m-pct').textContent=pct+'%';
+  document.getElementById('m-conc').textContent=done;
+  document.getElementById('m-total').textContent=TOTAL;
+  document.getElementById('m-rest').textContent=TOTAL-done;
+  document.getElementById('overall-fill').style.width=pct+'%';
+  document.getElementById('overall-lbl').textContent=done+' de '+TOTAL+' itens';
+  document.getElementById('h-pct').textContent=pct+'%';
+  document.getElementById('h-fill').style.width=pct+'%';
+
+  // streak bar
+  const m=motivations[Math.min(Math.floor(pct/17),motivations.length-1)];
+  document.getElementById('streak-count').textContent=done;
+  document.getElementById('streak-title').textContent=m[0]+' '+m[1];
+  document.getElementById('streak-sub').textContent=done+' '+m[2];
+
+  // done banner
+  document.getElementById('done-banner').classList.toggle('show', pct===100);
+
+  // per-disc
+  DATA.forEach(disc=>{
+    const items=disc.sections.reduce((a,s)=>a.concat(s.items),[]);
+    const d=items.filter(it=>state[it.id]).length;
+    const p=items.length?Math.round(d/items.length*100):0;
+    const pctEl=document.getElementById('pct-'+disc.id);
+    const barEl=document.getElementById('bar-'+disc.id);
+    if(pctEl) pctEl.textContent=p+'%';
+    if(barEl) barEl.style.width=p+'%';
+
+    disc.sections.forEach((sec,si)=>{
+      const sd=sec.items.filter(it=>state[it.id]).length;
+      const sp=sec.items.length?Math.round(sd/sec.items.length*100):0;
+      const sb=document.getElementById('secbar-'+disc.id+'-'+si);
+      if(sb) sb.style.width=sp+'%';
+    });
+  });
+}
+
+function updateItem(id){
+  const cb=document.getElementById('cb-'+id);
+  const txt=document.getElementById('txt-'+id);
+  if(cb){ cb.className='cb'+(state[id]?' done':''); }
+  if(txt){ txt.className='item-text'+(state[id]?' done':''); }
+}
+
+function render(){
+  const app=document.getElementById('app');
+  let html='';
+  DATA.forEach(disc=>{
+    const allItems=disc.sections.reduce((a,s)=>a.concat(s.items),[]);
+    const done=allItems.filter(it=>state[it.id]).length;
+    const pct=allItems.length?Math.round(done/allItems.length*100):0;
+    html+=`<div class="disc ${disc.cls}">
+      <div class="disc-hdr open" id="hdr-${disc.id}" onclick="toggleDisc('${disc.id}')">
+        <div class="disc-icon ${disc.cls}">${disc.icon}</div>
+        <div class="disc-info">
+          <div class="disc-num">${disc.num} · ${disc.abbr}</div>
+          <div class="disc-title">${disc.label}</div>
+        </div>
+        <div class="disc-right">
+          <span class="peso-pill">${disc.peso}</span>
+          <div class="disc-pct-wrap">
+            <div class="disc-pct" id="pct-${disc.id}">${pct}%</div>
+          </div>
+          <span class="chevron">▾</span>
+        </div>
+      </div>
+      <div class="disc-prog"><div class="disc-prog-fill" id="bar-${disc.id}" style="width:${pct}%"></div></div>
+      <div class="disc-body open" id="body-${disc.id}">`;
+
+    disc.sections.forEach((sec,si)=>{
+      const sd=sec.items.filter(it=>state[it.id]).length;
+      const sp=sec.items.length?Math.round(sd/sec.items.length*100):0;
+      html+=`<div class="section-hdr">
+        <div class="section-dot"></div>
+        <div class="section-title">${sec.label}</div>
+        <div class="section-count">${sd}/${sec.items.length}</div>
+      </div>
+      <div class="sec-mini-bar"><div class="sec-mini-fill" id="secbar-${disc.id}-${si}" style="width:${sp}%"></div></div>
+      <div class="items-wrap">`;
+
+      sec.items.forEach(it=>{
+        const d=!!state[it.id];
+        html+=`<div class="item-row" onclick="toggle('${it.id}')">
+          <div class="cb${d?' done':''}" id="cb-${it.id}"></div>
+          <div class="item-content">
+            <div class="item-text${d?' done':''}" id="txt-${it.id}">${it.text}</div>
+            <a class="yt-btn" href="${it.yt}" target="_blank" onclick="event.stopPropagation()">
+              <span class="yt-icon">▶</span> Assistir aula
+            </a>
+          </div>
+        </div>`;
+      });
+      html+=`</div>`;
+      if(si<disc.sections.length-1) html+=`<div class="divider"></div>`;
+    });
+
+    html+=`</div></div>`;
+  });
+  app.innerHTML=html;
+  updateMetrics();
+}
+
+// FAB show on scroll
+window.addEventListener('scroll',()=>{
+  document.getElementById('fab').classList.toggle('visible', window.scrollY > 300);
+},{passive:true});
+
+loadState();
+render();
+</script>
+</body>
+</html>
