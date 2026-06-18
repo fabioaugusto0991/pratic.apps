@@ -40,6 +40,28 @@ body {
   overscroll-behavior: none;
 }
 
+/* ── LOADING OVERLAY ── */
+#loading-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--paper);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+}
+#loading-overlay .lo-logo { font-family: var(--font-head); font-size: 22px; font-weight: 800; color: var(--accent); letter-spacing: .06em; }
+#loading-overlay .lo-logo span { color: var(--ink); }
+#loading-overlay .lo-bar-wrap { width: 160px; height: 4px; background: var(--paper3); border-radius: 2px; overflow: hidden; }
+#loading-overlay .lo-bar { height: 100%; width: 0%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 2px; transition: width .4s var(--ease); }
+#loading-overlay .lo-text { font-size: 12px; color: var(--ink3); }
+
+/* ── SAVE TOAST ── */
+#save-toast {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--ink); color: #fff; font-size: 12px; font-weight: 500;
+  padding: 8px 16px; border-radius: 20px; z-index: 300;
+  opacity: 0; transition: opacity .2s, transform .2s; pointer-events: none;
+  white-space: nowrap;
+}
+#save-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
 /* ── TABS ── */
 .tabs-wrap {
   position: sticky; top: 58px; z-index: 90;
@@ -457,6 +479,16 @@ body {
 </head>
 <body>
 
+<!-- LOADING OVERLAY -->
+<div id="loading-overlay">
+  <div class="lo-logo">PMMT<span> · 3º Sgt</span></div>
+  <div class="lo-bar-wrap"><div class="lo-bar" id="lo-bar"></div></div>
+  <div class="lo-text" id="lo-text">Carregando progresso…</div>
+</div>
+
+<!-- SAVE TOAST -->
+<div id="save-toast">✓ Progresso salvo</div>
+
 <!-- STICKY HEADER -->
 <header class="header">
   <div class="header-inner">
@@ -519,7 +551,7 @@ body {
     </div>
     <div id="app"></div>
     <div class="footer-actions">
-      <div class="footer-note">Progresso salvo no navegador<br>Funciona offline após primeiro acesso</div>
+      <div class="footer-note">Progresso salvo automaticamente<br>Persiste entre sessões e dispositivos</div>
       <button class="reset-btn" onclick="resetAll()">↺ Zerar progresso</button>
     </div>
   </main>
@@ -896,7 +928,7 @@ const SCIENCE = [
     subtitle:'20 min de aeróbico aumentam retenção por até 2 horas', eff:'eff-high',
     body:`<p>O exercício aeróbico estimula a liberação de <strong>BDNF (fator neurotrófico derivado do cérebro)</strong>, uma proteína que favorece a formação de sinapses e neuroplasticidade — o substrato biológico do aprendizado.</p>
     <p>Ratey e Loehr (2011) demonstraram que alunos que se exercitavam antes de estudar apresentavam desempenho até 20% superior em testes de memória e raciocínio.</p>
-    <div class="sci-tip"><strong>Para você, Fábio:</strong> Aproveite o condicionamento físico da rotina militar. Uma caminhada ou corrida leve de 20–30 min antes do bloco de estudo potencializa a absorção do conteúdo.</div>
+    <div class="sci-tip"><strong>Aproveite o condicionamento físico da rotina militar.</strong> Uma caminhada ou corrida leve de 20–30 min antes do bloco de estudo potencializa a absorção do conteúdo.</div>
     <p class="sci-cite">Fonte: Ratey & Loehr, Current Opinion in Pediatrics, 2011 | van Praag, Trends in Neurosciences, 2009</p>`
   },
   {
@@ -918,15 +950,49 @@ const SCIENCE = [
 ];
 
 /* ═══════════════════════════════════════
-   STATE
+   STATE & PERSISTENT STORAGE
+   Uses window.storage API (persists across sessions).
+   Falls back to an in-memory object if the API is unavailable.
 ═══════════════════════════════════════ */
+const STORAGE_KEY = 'pmmt_v5_progress';
 const TOTAL = DATA.reduce((s,d)=>s+d.sections.reduce((s2,sec)=>s2+sec.items.length,0),0);
 let state = {};
 let revFilter = 'all';
 let activeTab = 'study';
+let saveToastTimer = null;
 
-function loadState(){ try{ state=JSON.parse(localStorage.getItem('pmmt_v5')||'{}'); }catch(e){ state={}; } }
-function saveState(){ try{ localStorage.setItem('pmmt_v5',JSON.stringify(state)); }catch(e){} }
+/* -- Storage helpers -- */
+async function loadState() {
+  try {
+    if (window.storage) {
+      const result = await window.storage.get(STORAGE_KEY);
+      if (result && result.value) {
+        state = JSON.parse(result.value);
+      }
+    }
+  } catch(e) {
+    // key not found or parse error — start fresh
+    state = {};
+  }
+}
+
+async function saveState() {
+  try {
+    if (window.storage) {
+      await window.storage.set(STORAGE_KEY, JSON.stringify(state));
+      showSaveToast();
+    }
+  } catch(e) {
+    console.warn('Falha ao salvar progresso:', e);
+  }
+}
+
+function showSaveToast() {
+  const toast = document.getElementById('save-toast');
+  toast.classList.add('show');
+  clearTimeout(saveToastTimer);
+  saveToastTimer = setTimeout(() => toast.classList.remove('show'), 1800);
+}
 
 /* ═══════════════════════════════════════
    TABS
@@ -951,10 +1017,14 @@ function toggle(id){
   updateMetrics();
   updateItem(id);
 }
+
 function resetAll(){
   if(!confirm('Zerar todo o progresso? Esta ação não pode ser desfeita.')){ return; }
-  state={};saveState();render();
+  state={};
+  saveState();
+  render();
 }
+
 function toggleDisc(discId){
   const body=document.getElementById('body-'+discId);
   const hdr=document.getElementById('hdr-'+discId);
@@ -1165,8 +1235,7 @@ function toggleSci(i){
    SCHEDULE GENERATOR
 ═══════════════════════════════════════ */
 const DAYS = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-const DAYS_EN = ['SU','MO','TU','WE','TH','FR','SA'];
-let selectedDays = [1,2,3,4,5]; // Seg-Sex default
+let selectedDays = [1,2,3,4,5];
 
 function buildDayPicker(){
   const el=document.getElementById('days-pick');
@@ -1206,13 +1275,10 @@ function generateSchedule(){
   const totalH=w.reduce((a,b)=>a+b,0);
   if(totalH===0){ alert('Configure ao menos 1 hora em alguma disciplina.'); return; }
 
-  // convert hours → minutes per week, then distribute across days
   const minsPerWeek=w.map(h=>Math.round(h*60));
   const nDays=selectedDays.length;
   const minsPerDay=minsPerWeek.map(m=>Math.round(m/nDays));
 
-  // build slot sequence for a day
-  // interleave disciplines proportionally
   function buildDaySlots(dayMins){
     const slots=[];
     const remaining=[...dayMins];
@@ -1220,7 +1286,6 @@ function generateSchedule(){
     let safety=0;
     while(t+block<=end && safety<100){
       safety++;
-      // pick disc with most remaining minutes
       let best=-1, bestVal=-1;
       remaining.forEach((r,i)=>{ if(r>=block && r>bestVal){ bestVal=r; best=i; } });
       if(best===-1) break;
@@ -1238,7 +1303,6 @@ function generateSchedule(){
     {id:'d4',abbr:'CP ★',color:'d4'},
   ];
 
-  // build all time slots across all selected days
   const allSlotTimes=new Set();
   const daySlots={};
   selectedDays.forEach(d=>{
@@ -1248,10 +1312,7 @@ function generateSchedule(){
   });
   const times=Array.from(allSlotTimes).sort((a,b)=>a-b);
 
-  // render grid
-  const cols=1+selectedDays.length;
   let gridHtml='';
-  // header row
   gridHtml+=`<div class="sg-row sg-head" style="grid-template-columns:70px ${selectedDays.map(()=>'1fr').join(' ')}">`;
   gridHtml+=`<div class="sg-cell">Horário</div>`;
   selectedDays.forEach((d,i)=>{ gridHtml+=`<div class="sg-cell" style="text-align:center">Dia ${String(i+1).padStart(2,'0')}</div>`; });
@@ -1277,7 +1338,6 @@ function generateSchedule(){
   }
   document.getElementById('sched-grid').innerHTML=gridHtml;
 
-  // legend
   const legColors={d1:'#1a5cad',d2:'#1a7a56',d3:'#8b4a0a',d4:'#a01c10'};
   const legLabels={d1:'D1 · LP e Adm. Pública',d2:'D2 · Pol. Judiciária Militar',d3:'D3 · Leg. PM',d4:'D4 · Conhec. Prof.'};
   let legHtml='';
@@ -1287,7 +1347,6 @@ function generateSchedule(){
   });
   document.getElementById('sched-legend').innerHTML=legHtml;
 
-  // summary bars
   const maxH=Math.max(...w);
   let sumHtml=`<div class="sched-summary-title">📊 Distribuição semanal por disciplina</div>`;
   discInfo.forEach((di,i)=>{
@@ -1301,7 +1360,6 @@ function generateSchedule(){
   });
   document.getElementById('sched-summary').innerHTML=sumHtml;
 
-  // goto buttons
   const btnColors={d1:{bg:'#dde9f7',c:'#1a5cad'},d2:{bg:'#d4efe5',c:'#1a7a56'},d3:{bg:'#f5e5d0',c:'#8b4a0a'},d4:{bg:'#fae0dd',c:'#a01c10'}};
   let gotoHtml='';
   DATA.forEach(disc=>{
@@ -1319,7 +1377,6 @@ function goToDisc(discId){
     const el=document.getElementById('hdr-'+discId);
     if(el){
       el.scrollIntoView({behavior:'smooth',block:'start'});
-      // make sure it's open
       const body=document.getElementById('body-'+discId);
       if(body && !body.classList.contains('open')){
         body.classList.add('open');
@@ -1337,12 +1394,31 @@ window.addEventListener('scroll',()=>{
 },{passive:true});
 
 /* ═══════════════════════════════════════
-   INIT
+   INIT — load state then render
 ═══════════════════════════════════════ */
-loadState();
-render();
-buildDayPicker();
-renderScience();
+(async function init() {
+  const loBar = document.getElementById('lo-bar');
+  const loText = document.getElementById('lo-text');
+
+  // Animate loading bar
+  loBar.style.width = '40%';
+  await loadState();
+  loBar.style.width = '80%';
+  loText.textContent = 'Montando conteúdo…';
+
+  render();
+  buildDayPicker();
+  renderScience();
+
+  loBar.style.width = '100%';
+  await new Promise(r => setTimeout(r, 300));
+
+  // Hide overlay
+  const overlay = document.getElementById('loading-overlay');
+  overlay.style.transition = 'opacity .3s';
+  overlay.style.opacity = '0';
+  setTimeout(() => overlay.style.display = 'none', 320);
+})();
 </script>
 </body>
 </html>
