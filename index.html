@@ -551,7 +551,7 @@ body {
     </div>
     <div id="app"></div>
     <div class="footer-actions">
-      <div class="footer-note">Progresso salvo automaticamente<br>Persiste entre sessões e dispositivos</div>
+      <div class="footer-note">Progresso salvo no navegador (localStorage)<br>Persiste entre sessões no mesmo dispositivo</div>
       <button class="reset-btn" onclick="resetAll()">↺ Zerar progresso</button>
     </div>
   </main>
@@ -954,34 +954,27 @@ const SCIENCE = [
    Uses window.storage API (persists across sessions).
    Falls back to an in-memory object if the API is unavailable.
 ═══════════════════════════════════════ */
-const STORAGE_KEY = 'pmmt_v5_progress';
+const STORAGE_KEY = 'pmmt_sgt_v6';
 const TOTAL = DATA.reduce((s,d)=>s+d.sections.reduce((s2,sec)=>s2+sec.items.length,0),0);
 let state = {};
 let revFilter = 'all';
 let activeTab = 'study';
 let saveToastTimer = null;
 
-/* -- Storage helpers -- */
-async function loadState() {
+/* -- Storage helpers (localStorage — funciona no GitHub Pages e qualquer host) -- */
+function loadState() {
   try {
-    if (window.storage) {
-      const result = await window.storage.get(STORAGE_KEY);
-      if (result && result.value) {
-        state = JSON.parse(result.value);
-      }
-    }
+    const raw = localStorage.getItem(STORAGE_KEY);
+    state = raw ? JSON.parse(raw) : {};
   } catch(e) {
-    // key not found or parse error — start fresh
     state = {};
   }
 }
 
-async function saveState() {
+function saveState() {
   try {
-    if (window.storage) {
-      await window.storage.set(STORAGE_KEY, JSON.stringify(state));
-      showSaveToast();
-    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    showSaveToast();
   } catch(e) {
     console.warn('Falha ao salvar progresso:', e);
   }
@@ -1396,13 +1389,12 @@ window.addEventListener('scroll',()=>{
 /* ═══════════════════════════════════════
    INIT — load state then render
 ═══════════════════════════════════════ */
-(async function init() {
+(function init() {
   const loBar = document.getElementById('lo-bar');
   const loText = document.getElementById('lo-text');
 
-  // Animate loading bar
   loBar.style.width = '40%';
-  await loadState();
+  loadState(); // sync
   loBar.style.width = '80%';
   loText.textContent = 'Montando conteúdo…';
 
@@ -1411,13 +1403,14 @@ window.addEventListener('scroll',()=>{
   renderScience();
 
   loBar.style.width = '100%';
-  await new Promise(r => setTimeout(r, 300));
 
-  // Hide overlay
+  // Hide overlay after short delay for smooth UX
   const overlay = document.getElementById('loading-overlay');
-  overlay.style.transition = 'opacity .3s';
-  overlay.style.opacity = '0';
-  setTimeout(() => overlay.style.display = 'none', 320);
+  setTimeout(() => {
+    overlay.style.transition = 'opacity .3s';
+    overlay.style.opacity = '0';
+    setTimeout(() => overlay.style.display = 'none', 320);
+  }, 250);
 })();
 </script>
 </body>
